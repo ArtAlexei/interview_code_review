@@ -1,3 +1,4 @@
+import http.client as client
 import re
 
 from bs4 import BeautifulSoup
@@ -6,8 +7,7 @@ from config import NEW_SYMBOL, WORD_TEMPLATE, HOST
 
 
 def add_symbol_after_match(match: re.Match) -> str:
-    text = match.group()
-    return text + NEW_SYMBOL
+    return match.group() + NEW_SYMBOL
 
 
 def add_content_type_tag(soup: BeautifulSoup) -> BeautifulSoup:
@@ -29,3 +29,11 @@ def add_symbols_to_text(soup: BeautifulSoup) -> BeautifulSoup:
         new_tag_text = re.sub(WORD_TEMPLATE, add_symbol_after_match, tag_text)
         tag_text.replace_with(new_tag_text)
     return soup
+
+
+def modify_response(response: client.HTTPResponse) -> str:
+    soup = BeautifulSoup(response.read(), 'lxml')
+    soup = add_content_type_tag(soup)
+    soup = add_symbols_to_text(soup)
+    soup = replace_absolute_links(soup)
+    return str(soup)

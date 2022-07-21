@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from config import NEW_SYMBOL, REGEX_TO_ADD_AFTER, HOST
+from config import NEW_SYMBOL, WORD_TEMPLATE, HOST
 
 
 def add_symbol_after_match(match: re.Match) -> str:
@@ -25,7 +25,7 @@ def replace_absolute_links(soup: BeautifulSoup) -> BeautifulSoup:
 
 
 def add_symbols_to_text(soup: BeautifulSoup) -> BeautifulSoup:
-    for tag_text in soup.find_all(string=re.compile(REGEX_TO_ADD_AFTER)):
-        new_tag_text = re.sub(REGEX_TO_ADD_AFTER, add_symbol_after_match, tag_text)
+    for tag_text in soup.find_all(string=re.compile(WORD_TEMPLATE)):
+        new_tag_text = re.sub(WORD_TEMPLATE, add_symbol_after_match, tag_text)
         tag_text.replace_with(new_tag_text)
     return soup

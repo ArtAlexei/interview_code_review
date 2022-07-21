@@ -2,6 +2,7 @@ import http.client as client
 import http.server as server
 import socketserver
 import urllib.request as request
+from urllib.error import URLError
 
 from bs4 import BeautifulSoup
 
@@ -11,9 +12,14 @@ from config import HOST, PORT
 
 class MyProxy(server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        try:
+            response = request.urlopen(HOST + self.path)
+        except URLError:
+            self.send_response(500, f'{HOST} not available')
+            self.end_headers()
+            return
         self.send_response(200)
         self.end_headers()
-        response = request.urlopen(HOST + self.path)
         headers = dict(response.headers)
         if 'text/html' in headers['Content-Type']:
             html = modify_response(response)

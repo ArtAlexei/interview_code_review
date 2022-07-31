@@ -4,7 +4,7 @@ import urllib.request as request
 from urllib.error import URLError
 
 from config import HOST, PORT
-from functions import modify_response
+from response_modifiers import modify_response
 
 
 class MyProxy(server.SimpleHTTPRequestHandler):

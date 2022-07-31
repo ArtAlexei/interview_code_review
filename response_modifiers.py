@@ -6,10 +6,6 @@ from bs4 import BeautifulSoup
 from config import NEW_SYMBOL, WORD_TEMPLATE, HOST
 
 
-def add_symbol_after_match(match: re.Match) -> str:
-    return match.group() + NEW_SYMBOL
-
-
 def add_content_type_tag(soup: BeautifulSoup) -> BeautifulSoup:
     tag = soup.new_tag('meta')
     tag.attrs['http-equiv'] = 'Content-Type'
@@ -25,6 +21,9 @@ def replace_absolute_links(soup: BeautifulSoup) -> BeautifulSoup:
 
 
 def add_symbols_to_text(soup: BeautifulSoup) -> BeautifulSoup:
+    def add_symbol_after_match(match: re.Match) -> str:
+        return match.group() + NEW_SYMBOL
+
     for tag_text in soup.find_all(string=re.compile(WORD_TEMPLATE)):
         new_tag_text = re.sub(WORD_TEMPLATE, add_symbol_after_match, tag_text)
         tag_text.replace_with(new_tag_text)
